@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Treino — Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><span>●</span> MEU TREINO</div>
+    <nav>
+      <button class="nav-btn active" data-section="dashboard">Dashboard</button>
+      <button class="nav-btn" data-section="treinos">Registrar treino</button>
+      <button class="nav-btn" data-section="historico">Histórico</button>
+      <button class="nav-btn" data-section="exercicios">Exercícios</button>
+      <button class="nav-btn" data-section="medidas">Medidas</button>
+      <button class="nav-btn" data-section="coach">Coach IA</button>
+    </nav>
+    <div class="sidebar-bottom">
+      <button id="exportBtn" class="ghost-btn">Exportar dados</button>
+      <label class="ghost-btn import-label">Importar dados<input id="importInput" type="file" accept=".json"></label>
+      <button id="clearBtn" class="danger-btn">Limpar dados</button>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">PAINEL DE EVOLUÇÃO</p>
+        <h1 id="pageTitle">Dashboard</h1>
+      </div>
+      <button class="primary-btn" id="quickWorkout">+ Registrar treino</button>
+    </header>
+
+    <section id="dashboard" class="section active">
+      <div class="hero-card">
+        <div>
+          <p class="eyebrow">CONSISTÊNCIA</p>
+          <h2 id="streakText">0 dias</h2>
+          <p>Continue registrando seus treinos para acompanhar sua evolução.</p>
+        </div>
+        <div class="hero-number" id="weekCount">0</div>
+      </div>
+
+      <div class="stats-grid">
+        <article class="stat-card"><span>Treinos</span><strong id="statWorkouts">0</strong><small>Total registrado</small></article>
+        <article class="stat-card"><span>Volume total</span><strong id="statVolume">0 kg</strong><small>Carga × repetições</small></article>
+        <article class="stat-card"><span>Peso atual</span><strong id="statWeight">--</strong><small>Última medida</small></article>
+        <article class="stat-card"><span>Treinos este mês</span><strong id="statMonth">0</strong><small>Frequência</small></article>
+      </div>
+
+      <div class="charts-grid">
+        <article class="panel chart-panel">
+          <div class="panel-head"><div><h3>Volume por treino</h3><p>Como seu volume vem evoluindo</p></div></div>
+          <canvas id="volumeChart"></canvas>
+        </article>
+        <article class="panel chart-panel">
+          <div class="panel-head"><div><h3>Peso corporal</h3><p>Acompanhamento das medidas</p></div></div>
+          <canvas id="weightChart"></canvas>
+        </article>
+      </div>
+
+      <div class="bottom-grid">
+        <article class="panel">
+          <div class="panel-head"><div><h3>Últimos treinos</h3><p>Seu histórico mais recente</p></div></div>
+          <div id="recentWorkouts" class="list"></div>
+        </article>
+        <article class="panel">
+          <div class="panel-head"><div><h3>Melhores marcas</h3><p>Maior carga registrada por exercício</p></div></div>
+          <div id="personalRecords" class="list"></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="treinos" class="section">
+      <div class="panel form-panel">
+        <div class="panel-head"><div><h3>Novo treino</h3><p>Registre os exercícios, séries, repetições e cargas.</p></div></div>
+        <form id="workoutForm">
+          <div class="form-grid">
+            <label>Data<input type="date" id="workoutDate" required></label>
+            <label>Nome do treino<input id="workoutName" placeholder="Ex.: Peito + Tríceps" required></label>
+            <label>Duração (min)<input type="number" id="duration" min="1" placeholder="60"></label>
+          </div>
+          <div id="exerciseRows"></div>
+          <button type="button" class="secondary-btn" id="addExercise">+ Adicionar exercício</button>
+          <div class="form-actions"><button class="primary-btn" type="submit">Salvar treino</button></div>
+        </form>
+      </div>
+    </section>
+
+    <section id="historico" class="section">
+      <div class="panel">
+        <div class="panel-head"><div><h3>Histórico de treinos</h3><p>Consulte e remova registros.</p></div></div>
+        <div id="historyList" class="history"></div>
+      </div>
+    </section>
+
+    <section id="exercicios" class="section">
+      <div class="panel form-panel">
+        <div class="panel-head"><div><h3>Exercícios</h3><p>Catálogo completo em português, com filtro por grupo muscular e atualização opcional do catálogo.</p></div></div>
+        <div class="inline-form"><input id="newExercise" placeholder="Nome do exercício"><button class="primary-btn" id="saveExercise">Adicionar</button></div>
+        <div id="exerciseCatalog" class="tag-list"></div>
+      </div>
+    </section>
+
+    <section id="medidas" class="section">
+      <div class="panel form-panel">
+        <div class="panel-head"><div><h3>Medidas corporais</h3><p>Registre seu peso e acompanhe a evolução.</p></div></div>
+        <div class="form-grid">
+          <label>Data<input type="date" id="measureDate"></label>
+          <label>Peso (kg)<input type="number" id="measureWeight" step="0.1" placeholder="63.0"></label>
+          <label>Cintura (cm)<input type="number" id="measureWaist" step="0.1" placeholder="--"></label>
+        </div>
+        <button class="primary-btn" id="saveMeasure">Salvar medida</button>
+        <div id="measureList" class="history"></div>
+      </div>
+    </section>
+    <section id="coach" class="section">
+      <div class="coach-shell">
+        <div class="panel coach-intro">
+          <div class="coach-avatar">✦</div>
+          <div>
+            <p class="eyebrow">ASSISTENTE DE TREINO</p>
+            <h2>Coach IA</h2>
+            <p>Converse comigo sobre seus treinos. Eu uso os dados registrados no aplicativo para analisar sua evolução e sugerir os próximos passos.</p>
+          </div>
+        </div>
+
+        <div class="panel coach-chat-panel">
+          <div id="coachMessages" class="coach-messages" aria-live="polite"></div>
+          <div class="coach-suggestions">
+            <button type="button" data-prompt="Como está minha evolução nos últimos treinos?">📈 Minha evolução</button>
+            <button type="button" data-prompt="O que você recomenda para meu próximo treino?">🏋️ Próximo treino</button>
+            <button type="button" data-prompt="Quais exercícios parecem estar estagnados?">🔎 Exercícios estagnados</button>
+            <button type="button" data-prompt="Analise meu volume e minha frequência de treino.">📊 Analisar volume</button>
+          </div>
+          <form id="coachForm" class="coach-form">
+            <textarea id="coachInput" rows="1" placeholder="Ex.: devo aumentar a carga no supino?" maxlength="2000" required></textarea>
+            <button type="submit" id="coachSend">Enviar</button>
+          </form>
+          <p class="coach-disclaimer">A assistente orienta com base nos registros do app. Não substitui avaliação de um profissional de educação física ou de saúde.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
